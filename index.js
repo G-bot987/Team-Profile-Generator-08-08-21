@@ -1,38 +1,115 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
+const {licenses} = require(`./licenses/licenses.js`);
+const licensesName = licenses.map(license => license.name)
+const myIcon = licenses.map(license => license.icon);
+console.log(myIcon)
 
 inquirer
   .prompt([
     {
       type: 'input',
-      message: 'What is your name?',
-      name: 'name',
+      message: 'What is your projects title?',
+      name: 'title',
     },
     {
       type: 'input',
-      message: 'what is your location?',
-      name: 'location',
-      choices: ['london', 'birmingham', 'manchester', 'other'],
+      message: 'This will be a description of your project',
+      name: 'description',
     },
     {
-      type: 'list',
-      message: 'What is your preferred method of communication?',
-      name: 'contact',
-      choices: ['email', 'phone', 'telekinesis'],
+      type: 'input',
+      message: 'installation instructions for your project',
+      name: 'installation',
     },
-  ])
-  .then((data) => {
-    const filename = `${data.name.toLowerCase().split(' ').join('')}.html`;
+    {
+      type: 'input',
+      message: 'usage information?',
+      name: 'usage',
+    },
+    {
+      type: 'input',
+      message: 'contribrution guidelines',
+      name: 'contributing',
+    },
+    {
+      type: 'input',
+      message: 'test instructions',
+      name: 'test',
+    },
 
-    fs.writeFile(filename, JSON.stringify(data, null, '\t'), (err) =>
+      {
+        type: 'list',
+        message: 'Which license are you using?',
+        name: 'license',
+        choices: licensesName,
+      },
+
+      {
+        type: 'input',
+        message: 'what is your github',
+        name: 'github',
+      },
+
+      {
+        type: 'input',
+        message: 'what is your email',
+        name: 'email',
+      },
+  ])
+
+  .then((data) => {
+    if (data.title.trim().length === 0) return;
+    const filename = `${data.title.toLowerCase().split(' ').join('')}.md`;
+    const markdown = 
+`
+### license
+${data.license}
+
+### table of content
+*License,
+
+*Questions
+
+*Description
+
+*Installation
+
+*instructions
+
+*Usage
+ 
+*Contributing
+ 
+*Tests 
+
+### Questions 
+${data.github} 
+${data.email}
+
+### Description
+${data.description}
+
+### Installation 
+${data.installation}
+### instructions
+${data.instructions}
+### Usage 
+${data.usage}
+
+### Contributing 
+${data.contribting}
+
+### Tests
+${data.test}
+`;
+
+    fs.writeFile(filename,markdown, (err) =>
       err ? console.log(err) : console.log('Success!')
     );
+    
+
+
   });
   
   
-// //   userdata
-// const inputData = (X)
-
-// fs.appendFile('filename', `${process.argv[2]}\n`, (err) =>
-// err ? console.error(err) : console.log('test')
-// );
